@@ -47,13 +47,12 @@ function generateRandomString(length) {
 
 function callback(currentTime) {
     document.body.style.border = "5px solid "+colorSinceTime[currentTime];
-    addComputedFieldsToData(currentTime);
     // if (decideToKillTabWithML){
         // Kill the tab
     // } else{
     
     addComputedFieldsToData(currentTime);
-    // This is a bit hectic but so it goes
+    // This is a bit hectic but javascript dictionaries are a bit special
     let key = generateRandomString(15);
     var kvpair = {};
     kvpair[key] = JSON.stringify(data);
