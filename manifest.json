@@ -3,6 +3,11 @@
     "name": "TabStabber",
     "version": "1.0",
     "description": "Kill those tabs",
+    "permissions": [
+        "tabs",
+        "storage",
+        "activeTab"
+    ],
     "icons": {
         "48": "icons/border-48.png"
     },
@@ -11,9 +16,5 @@
             "matches": ["<all_urls>"],
             "js": ["main.js"]
         }
-    ],
-    "permissions": [
-        "tabs",
-        "unlimitedStorage"
     ]
 }
