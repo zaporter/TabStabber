@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "TabStabber",
+    "version": "1.0",
+    "description": "Kill those tabs",
+    "icons": {
+        "48": "icons/border-48.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["main.js"]
+        }
+    ]
+}
