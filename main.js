@@ -59,7 +59,7 @@ function onGetOldEntries(items){
         value["should_close"] = false;
         value["should_close_known"] = true;
         var kvpair = {};
-        kvpair[key] = value;
+        kvpair[key] = JSON.stringify(value);
         browser.storage.local.set(kvpair);
     }
 
@@ -124,6 +124,11 @@ function resetTimers(){
     ];
 }
 
+function markAsShouldntveClosed(){
+    let gettingItem = browser.storage.local.get(unfinishedDataEntries);
+    gettingItem.then(onGetOldEntries,onError);
+}
+
 // VISIBILITY
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
 
@@ -141,7 +146,6 @@ if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and 
   visibilityChange = "webkitvisibilitychange";
 }
 
-
 function handleVisibilityChange() {
     if (document[hidden]){
         console.log("Page hidden");
@@ -149,7 +153,7 @@ function handleVisibilityChange() {
         resetTimers();
 
         // Dont log visits of time less than 2 seconds
-        if (Date.now() - timeRefocused > 2000){
+        if (Date.now() - timeRefocused > 3000){
             data["times_visited"] += 1;
             if (data["total_time_on_page_ms"] == 0){
                 data["first_time_spent_on_page_ms"] = Date.now() - timeRefocused;
@@ -158,10 +162,8 @@ function handleVisibilityChange() {
 
         }
     } else {
-        console.log("data entries old: ");
-        console.log(unfinishedDataEntries);
-        let gettingItem = browser.storage.local.get(unfinishedDataEntries);
-        gettingItem.then(onGetOldEntries,onError);
+        // needs comment
+        setTimeout(markAsShouldntveClosed,3000);
         // kill timers to prevent page close while open
         killTimers();
         timeRefocused = Date.now();
