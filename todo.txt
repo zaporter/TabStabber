@@ -1,0 +1,16 @@
+Use message Get-State to see if tab is playing music, using the mic, or using the camera. DO NOT CLOSE in these cases. Might be worth adding to data
+
+I have left a race condition sitting in the data updating part of the ontabdeath part of background.js. This wont matter until it does
+
+The current indexing system has a process that grows by O(n) for background killin where n is the number of entries in storage.local. This can be made into O(log(n)) via a 2-layered system first keyed on id. It makes insertion slower though.... Worse performance for small n, far better for large n. Experimentation required. 
+    
+    Or as option 2: have a seperate system indexed by tab id that says which tabs it hasn't finished. This is very vulnerable to race conditions but could be written to be resilient. 
+
+
+Look into whether or not values need to be stored as strings in storage.local.... I seem to remember a problem where if it was a complicated object then something failed. It is kind of a pain in the ass though
+
+
+Fun idea: dont write to storage.local via the main.js script. Rather use background.js as an intermediary with an API. (Ouch... but probably a good idea in the long run)
+
+
+Figure out about random forest generation.....

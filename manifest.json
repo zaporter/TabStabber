@@ -4,8 +4,10 @@
     "version": "1.0",
     "description": "Kill those tabs",
     "permissions": [
+        "<all_urls>",
         "tabs",
         "storage",
+        "unlimitedStorage",
         "activeTab"
     ],
     "icons": {
@@ -16,5 +18,8 @@
             "matches": ["<all_urls>"],
             "js": ["main.js"]
         }
-    ]
+    ], 
+    "background": {
+        "scripts": ["background.js","includes/random-forest/src/RandomForestBase.js","includes/random-forest/src/RandomForestClassifier.js"]
+    }
 }
