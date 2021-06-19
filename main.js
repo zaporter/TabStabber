@@ -26,6 +26,10 @@ var openingTime = new Date();
 // Variable to indicate time at which the page was just recently brought into focus
 var timeRefocused = Date.now();
 
+// To be filled in by the message to background.js via the Get-Id message
+var tabId = 0;
+
+// 
 var unfinishedDataEntries = [];
 
 
@@ -45,8 +49,27 @@ function generateRandomString(length) {
     return result;
 }
 
+function onGetOldEntries(items){
+    console.log("dfsdfdata entries old: { ");
+    console.log(items);
+    console.log("}");
+    for (var index in unfinishedDataEntries){
+        var key = unfinishedDataEntries[index];
+        var value = JSON.parse(items[key]);
+        value["should_close"] = false;
+        value["should_close_known"] = true;
+        var kvpair = {};
+        kvpair[key] = value;
+        browser.storage.local.set(kvpair);
+    }
+
+    // reclear unfinishedDataEntries
+    unfinishedDataEntries=[];
+}
+
 function callback(currentTime) {
     document.body.style.border = "5px solid "+colorSinceTime[currentTime];
+    console.log(" CALLBACK   "+currentTime);
     // if (decideToKillTabWithML){
         // Kill the tab
     // } else{
@@ -57,7 +80,7 @@ function callback(currentTime) {
     var kvpair = {};
     kvpair[key] = JSON.stringify(data);
     browser.storage.local.set(kvpair);
-    unfinishedDataEntries.append(key);
+    unfinishedDataEntries.push(key);
 
     // }
     
@@ -74,7 +97,8 @@ function initializeData(){
 // Initialize the data after 2 seconds to help with page loading / redirection 
 setTimeout(initializeData,2000);
 
-function addComputedFieldsToData(timeSinceLastFocus) {
+function addComputedFieldsToData(timeSinceLastFocus) { 
+    data["tab_id"] = tabId;
     data["time_since_open_ms"] = Date.now() - openingTime;
     data["mean_time_on_page_ms"] = data["total_time_on_page_ms"]/data["times_visited"];
     data["percentage_focused"] = data["total_time_on_page_ms"] / data["time_since_open_ms"];
@@ -99,8 +123,6 @@ function resetTimers(){
         setTimeout(function(){callback(60000)},60000)
     ];
 }
-resetTimers();
-
 
 // VISIBILITY
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
@@ -136,6 +158,10 @@ function handleVisibilityChange() {
 
         }
     } else {
+        console.log("data entries old: ");
+        console.log(unfinishedDataEntries);
+        let gettingItem = browser.storage.local.get(unfinishedDataEntries);
+        gettingItem.then(onGetOldEntries,onError);
         // kill timers to prevent page close while open
         killTimers();
         timeRefocused = Date.now();
@@ -144,10 +170,24 @@ function handleVisibilityChange() {
     }
 }
 
-function tabCloseListener(eventa){
-    browser.storage.local.set({killed:"true" });
-}
-window.addEventListener("TabClose", tabCloseListener,false);
 document.addEventListener(visibilityChange, handleVisibilityChange,false);
+
+//
+// Communication with background.js
+//
+
+
+// Get id from background.js
+function handleIdResponse(message) {
+    tabId=message["id"];
+}
+
+function onError(error) {
+  console.log(`Error: ${error}`);
+}
+var sending = browser.runtime.sendMessage({action:"Get-Id"});
+sending.then(handleIdResponse,onError);
+
+
 
 

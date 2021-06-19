@@ -1,0 +1,1 @@
+Use message Get-State to see if tab is playing music, using the mic, or using the camera. DO NOT CLOSE in these cases. Might be worth adding to data
