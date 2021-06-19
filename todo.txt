@@ -11,3 +11,6 @@ Look into whether or not values need to be stored as strings in storage.local...
 
 
 Fun idea: dont write to storage.local via the main.js script. Rather use background.js as an intermediary with an API. (Ouch... but probably a good idea in the long run)
+
+
+Figure out about random forest generation.....

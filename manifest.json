@@ -18,8 +18,8 @@
             "matches": ["<all_urls>"],
             "js": ["main.js"]
         }
-    ],
+    ], 
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["background.js","includes/random-forest/src/RandomForestBase.js","includes/random-forest/src/RandomForestClassifier.js"]
     }
 }

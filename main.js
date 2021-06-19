@@ -76,7 +76,7 @@ function callback(currentTime) {
     
     addComputedFieldsToData(currentTime);
     // This is a bit hectic but javascript dictionaries are a bit special
-    let key = generateRandomString(15);
+    let key = Date.now() + generateRandomString(5);
     var kvpair = {};
     kvpair[key] = JSON.stringify(data);
     browser.storage.local.set(kvpair);
@@ -163,6 +163,7 @@ function handleVisibilityChange() {
         }
     } else {
         // needs comment
+        // param changes sensitivity & courage
         setTimeout(markAsShouldntveClosed,3000);
         // kill timers to prevent page close while open
         killTimers();
